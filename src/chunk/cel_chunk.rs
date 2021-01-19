@@ -4,7 +4,7 @@ use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
 
 use flate2::read::ZlibDecoder;
 
-use crate::color::{Pixels};
+use crate::color::Pixels;
 use crate::helpers::read_bytes;
 use crate::{ColorDepth, Header};
 
@@ -42,7 +42,7 @@ impl Cel {
         }
     }
 
-    pub fn pixels(&self, color_depth: &ColorDepth) -> Option<Pixels> {
+    pub fn pixels(&self, color_depth: &ColorDepth) -> io::Result<Pixels> {
         match &self {
             Cel::CompressedImage {
                 zlib_compressed_data,
@@ -53,10 +53,9 @@ impl Cel {
                 d.read_to_end(&mut s).unwrap();
                 let len = s.len() as u64;
                 let mut rdr = Cursor::new(s);
-                let pixels = CelChunk::read_pixels(&mut rdr, color_depth, len);
-                Some(pixels.unwrap().clone())
+                CelChunk::read_pixels(&mut rdr, color_depth, len)
             }
-            Cel::RawCel { pixels, .. } => Some(pixels.clone()),
+            Cel::RawCel { pixels, .. } => Ok(pixels.clone()),
             _ => unimplemented!(),
         }
     }
@@ -248,6 +247,6 @@ mod tests {
             zlib_compressed_data: data,
         };
 
-        cel.pixels(&ColorDepth::RGBA);
+        cel.pixels(&ColorDepth::RGBA).unwrap();
     }
 }
