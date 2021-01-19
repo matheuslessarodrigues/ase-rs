@@ -1,6 +1,5 @@
 use ase::*;
-use std::fs;
-use std::io::{Cursor, Read, Seek, SeekFrom, Write};
+use std::io::{Cursor, Read, Seek, SeekFrom};
 
 fn test_read(fname: &str) -> std::io::Result<()> {
     let mut file = std::fs::File::open(fname)?;
@@ -31,6 +30,7 @@ fn read() -> std::io::Result<()> {
     test_read("sample_aseprite_files/layered.aseprite")?;
     test_read("sample_aseprite_files/animated.aseprite")?;
     test_read("sample_aseprite_files/sliced.aseprite")?;
+    test_read("sample_aseprite_files/with_color_profile.aseprite")?;
     Ok(())
 }
 
@@ -40,5 +40,6 @@ fn rw() -> std::io::Result<()> {
     test_rw("sample_aseprite_files/layered.aseprite")?;
     test_rw("sample_aseprite_files/animated.aseprite")?;
     test_rw("sample_aseprite_files/sliced.aseprite")?;
+    test_rw("sample_aseprite_files/with_color_profile.aseprite")?;
     Ok(())
 }
